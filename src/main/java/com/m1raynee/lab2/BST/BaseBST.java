@@ -1,8 +1,11 @@
-package com.m1raynee;
+package com.m1raynee.lab2.BST;
 
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Queue;
+
+import com.m1raynee.lab2.etc.IBaseNode;
+
 import java.util.LinkedList;
 
 public class BaseBST<T extends Comparable<T>, N extends IBaseNode<T, N>> {

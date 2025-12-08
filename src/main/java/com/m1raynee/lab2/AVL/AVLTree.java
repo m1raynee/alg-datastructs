@@ -1,4 +1,6 @@
-package com.m1raynee;
+package com.m1raynee.lab2.AVL;
+
+import com.m1raynee.lab2.BST.BaseBST;
 
 public class AVLTree<T extends Comparable<T>> extends BaseBST<T, AVLNode<T>> {
     @Override
@@ -19,28 +21,28 @@ public class AVLTree<T extends Comparable<T>> extends BaseBST<T, AVLNode<T>> {
         );
     }
 
-    private AVLNode<T> rotateRight(AVLNode<T> y) {
-        AVLNode<T> x = y.getLeft();
-        AVLNode<T> T2 = x.getRight();
+    private AVLNode<T> rotateRight(AVLNode<T> parent) {
+        AVLNode<T> l_child = parent.getLeft();
+        AVLNode<T> r_gchild = l_child.getRight();
 
-        x.setRight(y);
-        y.setLeft(T2);
+        l_child.setRight(parent);
+        parent.setLeft(r_gchild);
 
-        updateHeight(y);
-        updateHeight(x);
-        return x;
+        updateHeight(parent);
+        updateHeight(l_child);
+        return l_child;
     }
 
-    private AVLNode<T> rotateLeft(AVLNode<T> x) {
-        AVLNode<T> y = x.getRight();
-        AVLNode<T> T2 = y.getLeft();
+    private AVLNode<T> rotateLeft(AVLNode<T> parent) {
+        AVLNode<T> r_child = parent.getRight();
+        AVLNode<T> l_gchild = r_child.getLeft();
 
-        y.setLeft(x);
-        x.setRight(T2);
+        r_child.setLeft(parent);
+        parent.setRight(l_gchild);
 
-        updateHeight(x);
-        updateHeight(y);
-        return y;
+        updateHeight(parent);
+        updateHeight(r_child);
+        return r_child;
     }
 
     private AVLNode<T> balance(AVLNode<T> node, T key) {
@@ -49,22 +51,26 @@ public class AVLTree<T extends Comparable<T>> extends BaseBST<T, AVLNode<T>> {
 
         // Left-Left
         if (balanceFactor > 1 && key.compareTo(node.getLeft().getKey()) < 0) {
+            System.out.println("LL at " + node.getKey() + " with " + key);
             return rotateRight(node);
         }
-
+        
         // Right-Right
         if (balanceFactor < -1 && key.compareTo(node.getRight().getKey()) > 0) {
+            System.out.println("RR at " + node.getKey() + " with " + key);
             return rotateLeft(node);
         }
-
+        
         // Left-Right
         if (balanceFactor > 1 && key.compareTo(node.getLeft().getKey()) > 0) {
+            System.out.println("LR at " + node.getKey() + " with " + key);
             node.setLeft(rotateLeft(node.getLeft()));
             return rotateRight(node);
         }
 
         // Right-Left
         if (balanceFactor < -1 && key.compareTo(node.getRight().getKey()) < 0) {
+            System.out.println("RL at " + node.getKey() + " with " + key);
             node.setRight(rotateRight(node.getRight()));
             return rotateLeft(node);
         }
