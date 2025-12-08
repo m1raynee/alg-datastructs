@@ -51,26 +51,22 @@ public class AVLTree<T extends Comparable<T>> extends BaseBST<T, AVLNode<T>> {
 
         // Left-Left
         if (balanceFactor > 1 && key.compareTo(node.getLeft().getKey()) < 0) {
-            System.out.println("LL at " + node.getKey() + " with " + key);
             return rotateRight(node);
         }
         
         // Right-Right
         if (balanceFactor < -1 && key.compareTo(node.getRight().getKey()) > 0) {
-            System.out.println("RR at " + node.getKey() + " with " + key);
             return rotateLeft(node);
         }
         
         // Left-Right
         if (balanceFactor > 1 && key.compareTo(node.getLeft().getKey()) > 0) {
-            System.out.println("LR at " + node.getKey() + " with " + key);
             node.setLeft(rotateLeft(node.getLeft()));
             return rotateRight(node);
         }
 
         // Right-Left
         if (balanceFactor < -1 && key.compareTo(node.getRight().getKey()) < 0) {
-            System.out.println("RL at " + node.getKey() + " with " + key);
             node.setRight(rotateRight(node.getRight()));
             return rotateLeft(node);
         }
