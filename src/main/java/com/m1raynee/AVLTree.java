@@ -45,26 +45,26 @@ public class AVLTree<T extends Comparable<T>> extends BaseBST<T, AVLNode<T>> {
 
     private AVLNode<T> balance(AVLNode<T> node, T key) {
         updateHeight(node);
-        int balance = (node == null) ? 0 : height(node.getLeft()) - height(node.getRight());
+        int balanceFactor = (node == null) ? 0 : height(node.getLeft()) - height(node.getRight());
 
         // Left-Left
-        if (balance > 1 && key.compareTo(node.getLeft().getKey()) < 0) {
+        if (balanceFactor > 1 && key.compareTo(node.getLeft().getKey()) < 0) {
             return rotateRight(node);
         }
 
         // Right-Right
-        if (balance < -1 && key.compareTo(node.getRight().getKey()) > 0) {
+        if (balanceFactor < -1 && key.compareTo(node.getRight().getKey()) > 0) {
             return rotateLeft(node);
         }
 
         // Left-Right
-        if (balance > 1 && key.compareTo(node.getLeft().getKey()) > 0) {
+        if (balanceFactor > 1 && key.compareTo(node.getLeft().getKey()) > 0) {
             node.setLeft(rotateLeft(node.getLeft()));
             return rotateRight(node);
         }
 
         // Right-Left
-        if (balance < -1 && key.compareTo(node.getRight().getKey()) < 0) {
+        if (balanceFactor < -1 && key.compareTo(node.getRight().getKey()) < 0) {
             node.setRight(rotateRight(node.getRight()));
             return rotateLeft(node);
         }
