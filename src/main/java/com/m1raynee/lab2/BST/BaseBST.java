@@ -45,7 +45,7 @@ public class BaseBST<T extends Comparable<T>, N extends IBaseNode<T, N>> {
         return searchRec(root, key);
     }
 
-    private boolean searchRec(N node, T key) {
+    protected boolean searchRec(N node, T key) {
         if (node == null) {
             return false;
         }
@@ -122,7 +122,7 @@ public class BaseBST<T extends Comparable<T>, N extends IBaseNode<T, N>> {
         return inOrderRec(root);
     }
 
-    private List<T> inOrderRec(N node) {
+    protected List<T> inOrderRec(N node) {
         List<T> list = new ArrayList<>();
         if (node == null) {
             return list;
@@ -137,7 +137,7 @@ public class BaseBST<T extends Comparable<T>, N extends IBaseNode<T, N>> {
         return preOrderRec(root);
     }
 
-    private List<T> preOrderRec(N node) {
+    protected List<T> preOrderRec(N node) {
         List<T> list = new ArrayList<>();
         if (node == null) {
             return list;
@@ -152,7 +152,7 @@ public class BaseBST<T extends Comparable<T>, N extends IBaseNode<T, N>> {
         return postOrderRec(root);
     }
 
-    private List<T> postOrderRec(N node) {
+    protected List<T> postOrderRec(N node) {
         List<T> list = new ArrayList<>();
         if (node == null) {
             return list;
@@ -167,7 +167,7 @@ public class BaseBST<T extends Comparable<T>, N extends IBaseNode<T, N>> {
         return levelOrderRec(root);
     }
 
-    private List<T> levelOrderRec(N node) {
+    protected List<T> levelOrderRec(N node) {
         List<T> list = new ArrayList<>();
         if (node == null) {
             return list;
@@ -192,7 +192,7 @@ public class BaseBST<T extends Comparable<T>, N extends IBaseNode<T, N>> {
         System.out.println();
     }
 
-    private void prettyPrintRec(N node, String prefix, boolean isTail) {
+    protected void prettyPrintRec(N node, String prefix, boolean isTail) {
         if (node != null) {
             if (node.getRight() != null) {
                 prettyPrintRec(node.getRight(), prefix + (isTail ? "│   " : "    "), false);
