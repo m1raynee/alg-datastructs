@@ -41,23 +41,16 @@ public class BaseBST<T extends Comparable<T>, N extends IBaseNode<T, N>> {
         return current;
     }
 
-    public boolean search(T key) {
+    public N search(T key) {
         return searchRec(root, key);
     }
 
-    protected boolean searchRec(N node, T key) {
-        if (node == null) {
-            return false;
-        }
-
+    protected N searchRec(N node, T key) {
+        if (node == null) return null;
         int cmp = key.compareTo(node.getKey());
-        if (cmp < 0) {
-            return searchRec(node.getLeft(), key);
-        } else if (cmp > 0) {
-            return searchRec(node.getRight(), key);
-        } else {
-            return true;
-        }
+        if (cmp < 0) return searchRec(node.getLeft(), key);
+        else if (cmp > 0) return searchRec(node.getRight(), key);
+        return node;
     }
 
     public T findMin() {
