@@ -22,27 +22,27 @@ public class AVLTree<T extends Comparable<T>> extends BaseBST<T, AVLNode<T>> {
     }
 
     private AVLNode<T> rotateRight(AVLNode<T> parent) {
-        AVLNode<T> l_child = parent.getLeft();
-        AVLNode<T> r_gchild = l_child.getRight();
+        AVLNode<T> leftChild = parent.getLeft();
+        AVLNode<T> rightGreatchild = leftChild.getRight();
 
-        l_child.setRight(parent);
-        parent.setLeft(r_gchild);
+        leftChild.setRight(parent);
+        parent.setLeft(rightGreatchild);
 
         updateHeight(parent);
-        updateHeight(l_child);
-        return l_child;
+        updateHeight(leftChild);
+        return leftChild;
     }
 
     private AVLNode<T> rotateLeft(AVLNode<T> parent) {
-        AVLNode<T> r_child = parent.getRight();
-        AVLNode<T> l_gchild = r_child.getLeft();
+        AVLNode<T> rightChild = parent.getRight();
+        AVLNode<T> leftGrandchild = rightChild.getLeft();
 
-        r_child.setLeft(parent);
-        parent.setRight(l_gchild);
+        rightChild.setLeft(parent);
+        parent.setRight(leftGrandchild);
 
         updateHeight(parent);
-        updateHeight(r_child);
-        return r_child;
+        updateHeight(rightChild);
+        return rightChild;
     }
 
     private AVLNode<T> balance(AVLNode<T> node, T key) {
