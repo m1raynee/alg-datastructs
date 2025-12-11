@@ -77,8 +77,8 @@ public class Experiments {
         }
     }
 
-    private static void experiment5_AVL() {
-        Set<Integer> keys = generateUniqueRandomKeys(50_000);
+    private static void experiment5_AVL(int size) {
+        Set<Integer> keys = generateUniqueRandomKeys(size);
         AVLTree<Integer> avl = new AVLTree<>();
 
         Path p = Path.of("src/main/resources/experiment5_avl.csv");
@@ -97,8 +97,8 @@ public class Experiments {
         }
     }
 
-    private static void experiment5_RBT() {
-        Set<Integer> keys = generateUniqueRandomKeys(50_000);
+    private static void experiment5_RBT(int size) {
+        Set<Integer> keys = generateUniqueRandomKeys(size);
         RedBlackTree<Integer> rbt = new RedBlackTree<>();
 
         Path p = Path.of("src/main/resources/experiment5_rbt.csv");
@@ -117,14 +117,14 @@ public class Experiments {
         }
     }
 
-    private static void experiment6_AVL() {
+    private static void experiment6_AVL(int size) {
         AVLTree<Integer> avl = new AVLTree<>();
 
         Path p = Path.of("src/main/resources/experiment6_avl.csv");
         try (PrintWriter w = new PrintWriter(Files.newBufferedWriter(p))) {
             w.println("n,height");
 
-            for (int key = 1; key <= 50_000; key++) {
+            for (int key = 1; key <= size; key++) {
                 avl.insert(key);
                 int height = avl.height();
                 w.println(key + "," + height);
@@ -134,14 +134,14 @@ public class Experiments {
         }
     }
 
-    private static void experiment6_RBT() {
+    private static void experiment6_RBT(int size) {
         RedBlackTree<Integer> rbt = new RedBlackTree<>();
 
         Path p = Path.of("src/main/resources/experiment6_rbt.csv");
         try (PrintWriter w = new PrintWriter(Files.newBufferedWriter(p))) {
             w.println("n,height");
 
-            for (int key = 1; key <= 50_000; key++) {
+            for (int key = 1; key <= size; key++) {
                 rbt.insert(key);
                 int height = rbt.height();
                 w.println(key + "," + height);
@@ -152,12 +152,14 @@ public class Experiments {
     }
 
     public static void main(String[] args) {
-        // experiment4(50_000);
+        int size = 50_000;
 
-        // experiment5_AVL();
-        // experiment5_RBT();
-        
-        experiment6_AVL();
-        experiment6_RBT();
+        experiment4(size);
+
+        experiment5_AVL(size);
+        experiment5_RBT(size);
+
+        experiment6_AVL(size);
+        experiment6_RBT(size);
     }
 }
