@@ -5,9 +5,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
 
-// import java.util.ArrayList;
-// import java.util.List;
-
 import com.m1raynee.lab2.BST.BaseBST;
 
 public class RedBlackTree<T extends Comparable<T>> extends BaseBST<T, RBTNode<T>> {
@@ -33,7 +30,7 @@ public class RedBlackTree<T extends Comparable<T>> extends BaseBST<T, RBTNode<T>
             rightChild.getLeft().setParent(parent);
         }
         rightChild.setParent(parent.getParent());
-        if (parent.getParent() == NIL) {
+        if (parent.getParent().isNIL()) {
             this.root = rightChild;
         } else if (parent == parent.getParent().getLeft()) {
             parent.getParent().setLeft(rightChild);
@@ -51,7 +48,7 @@ public class RedBlackTree<T extends Comparable<T>> extends BaseBST<T, RBTNode<T>
             leftChild.getRight().setParent(parent);
         }
         leftChild.setParent(parent.getParent());
-        if (parent.getParent() == NIL) {
+        if (parent.getParent().isNIL()) {
             this.root = leftChild;
         } else if (parent == parent.getParent().getRight()) {
             parent.getParent().setRight(leftChild);
@@ -78,7 +75,7 @@ public class RedBlackTree<T extends Comparable<T>> extends BaseBST<T, RBTNode<T>
             } else return;
         }
         newNode.setParent(parent);
-        if (parent == NIL) {
+        if (parent.isNIL()) {
             root = newNode;
         } else if (key.compareTo(parent.getKey()) < 0) {
             parent.setLeft(newNode);
@@ -129,34 +126,123 @@ public class RedBlackTree<T extends Comparable<T>> extends BaseBST<T, RBTNode<T>
         root.setColor(NodeColor.BLACK);
     }
 
-    // delete
+    @Override
+    public void delete(T key) {
+        RBTNode<T> node = search(key);
+        if (node.isNIL()) throw new IllegalStateException("Key not found in the tree");
 
+        deleteNode(node);
+    }
 
+    private void deleteNode(RBTNode<T> node) {
+        if (node.isNIL()) {
+            return;
+        }
 
-    private void transplantNode(RBTNode<T> dest, RBTNode<T> node) {
-        if (dest.getParent().isNIL()) {
-            root = node;
-        } else if (dest == dest.getParent().getLeft()) {
-            dest.getParent().setLeft(node);
-        } dest.getParent().setRight(node);
-        node.setParent(dest.getParent());
+        // 1. Node has two children
+        if (!node.getLeft().isNIL() && !node.getRight().isNIL()) {
+            RBTNode<T> successor = findMinRec(node.getRight());
+            node.setKey(successor.getKey());
+            deleteNode(successor);
+            return;
+        }
+        
+        // 2. Node has at most one child
+        RBTNode<T> child = node.getLeft().isNIL() ? node.getRight() : node.getLeft();
+        
+        if (!node.getParent().isNIL()) {
+            if (node == node.getParent().getLeft()) {
+                node.getParent().setLeft(child);
+            } else {
+                node.getParent().setRight(child);
+            }
+            child.setParent(node.getParent());
+        } else {
+            root = child;
+            child.setParent(NIL);
+        }
+        
+        // If deleted node was black, we need to rebalance
+        if (node.getColor() == NodeColor.BLACK) {
+            balanceDelete(child);
+        }
+    }
+
+    private void balanceDelete(RBTNode<T> node) {
+        while (node != root && node.getColor() == NodeColor.BLACK) {
+            boolean isLeftChild = (node == node.getParent().getLeft());
+            RBTNode<T> sibling = isLeftChild ? node.getParent().getRight() : node.getParent().getLeft();
+
+            if (sibling.getColor() == NodeColor.RED) {
+                sibling.setColor(NodeColor.BLACK);
+                node.getParent().setColor(NodeColor.RED);
+
+                if (isLeftChild) rotateLeft(node.getParent());
+                else rotateRight(node.getParent());
+                sibling = isLeftChild ? node.getParent().getRight() : node.getParent().getLeft();
+            }
+
+            if (node == node.getParent().getLeft()) {
+                
+                // Case 2: Sibling is black with two black children
+                if (sibling.getLeft().getColor() == NodeColor.BLACK && 
+                    sibling.getRight().getColor() == NodeColor.BLACK) {
+                    sibling.setColor(NodeColor.RED);
+                    node = node.getParent();
+                }
+                // Case 3 & 4: Sibling has at least one red child
+                else {
+                    // Case 3: Sibling's right child is black
+                    if (sibling.getRight().getColor() == NodeColor.BLACK) {
+                        sibling.getLeft().setColor(NodeColor.BLACK);
+                        sibling.setColor(NodeColor.RED);
+                        rotateRight(sibling);
+                        sibling = node.getParent().getRight();
+                    }
+                    // Case 4: Sibling's right child is red
+                    sibling.setColor(node.getParent().getColor());
+                    node.getParent().setColor(NodeColor.BLACK);
+                    sibling.getRight().setColor(NodeColor.BLACK);
+                    rotateLeft(node.getParent());
+                    node = root;
+                }
+            } else {
+                // Case 2: Sibling is black with two black children
+                if (sibling.getRight().getColor() == NodeColor.BLACK && 
+                    sibling.getLeft().getColor() == NodeColor.BLACK) {
+                    sibling.setColor(NodeColor.RED);
+                    node = node.getParent();
+                }
+                // Case 3 & 4: Sibling has at least one red child
+                else {
+                    // Case 3: Sibling's left child is black
+                    if (sibling.getLeft().getColor() == NodeColor.BLACK) {
+                        sibling.getRight().setColor(NodeColor.BLACK);
+                        sibling.setColor(NodeColor.RED);
+                        rotateLeft(sibling);
+                        sibling = node.getParent().getLeft();
+                    }
+                    // Case 4: Sibling's left child is red
+                    sibling.setColor(node.getParent().getColor());
+                    node.getParent().setColor(NodeColor.BLACK);
+                    sibling.getLeft().setColor(NodeColor.BLACK);
+                    rotateRight(node.getParent());
+                    node = root;
+                }
+            }
+        }
+        node.setColor(NodeColor.BLACK);
     }
 
     // NIL replacement start
-    @Override
-    protected boolean searchRec(RBTNode<T> node, T key) {
-        if (node == NIL) {
-            return false;
-        }
 
+    @Override
+    protected RBTNode<T> searchRec(RBTNode<T> node, T key) {
+        if (node.isNIL()) return node;
         int cmp = key.compareTo(node.getKey());
-        if (cmp < 0) {
-            return searchRec(node.getLeft(), key);
-        } else if (cmp > 0) {
-            return searchRec(node.getRight(), key);
-        } else {
-            return true;
-        }
+        if (cmp < 0) return searchRec(node.getLeft(), key);
+        else if (cmp > 0) return searchRec(node.getRight(), key);
+        return node;
     }
     
     @Override
@@ -231,21 +317,31 @@ public class RedBlackTree<T extends Comparable<T>> extends BaseBST<T, RBTNode<T>
         }
         return list;
     }
-
-    // NIL replacement end
-
+    
     @Override
     protected void prettyPrintRec(RBTNode<T> node, String prefix, boolean isTail) {
         if (node != NIL) {
             if (node.getRight() != NIL) {
                 prettyPrintRec(node.getRight(), prefix + (isTail ? "│   " : "    "), false);
             }
-
+            
             System.out.println(prefix + (isTail ? "└── " : "┌── ") + node.toString());
-
+            
             if (node.getLeft() != NIL) {
                 prettyPrintRec(node.getLeft(), prefix + (isTail ? "    " : "│   "), true);
             }
         }
     }
+
+    @Override
+    protected int heightRec(RBTNode<T> node) {
+        if (node.isNIL()) {
+            return 0;
+        }
+        int leftHeight = heightRec(node.getLeft());
+        int rightHeight = heightRec(node.getRight());
+        return Math.max(leftHeight, rightHeight) + 1;
+    }
+
+    // NIL replacement end
 }

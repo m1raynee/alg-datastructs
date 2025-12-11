@@ -198,4 +198,17 @@ public class BaseBST<T extends Comparable<T>, N extends IBaseNode<T, N>> {
             }
         }
     }
+
+    public int height() {
+        return heightRec(root);
+    }
+
+    protected int heightRec(N node) {
+        if (node == null) {
+            return 0;
+        }
+        int leftHeight = heightRec(node.getLeft());
+        int rightHeight = heightRec(node.getRight());
+        return Math.max(leftHeight, rightHeight) + 1;
+    }
 }

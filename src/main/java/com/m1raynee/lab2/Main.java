@@ -53,6 +53,9 @@ public class Main {
         System.out.println(rbt.preOrderTraversal());
         System.out.println(rbt.postOrderTraversal());
         System.out.println(rbt.levelOrderTraversal());
+
+        rbt.delete(55);
+        rbt.prettyPrint();
     }
 }
 
