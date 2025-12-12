@@ -139,7 +139,6 @@ public class RedBlackTree<T extends Comparable<T>> extends BaseBST<T, RBTNode<T>
             return;
         }
 
-        // 1. Node has two children
         if (!node.getLeft().isNIL() && !node.getRight().isNIL()) {
             RBTNode<T> successor = findMinRec(node.getRight());
             node.setKey(successor.getKey());
@@ -147,7 +146,6 @@ public class RedBlackTree<T extends Comparable<T>> extends BaseBST<T, RBTNode<T>
             return;
         }
         
-        // 2. Node has at most one child
         RBTNode<T> child = node.getLeft().isNIL() ? node.getRight() : node.getLeft();
         
         if (!node.getParent().isNIL()) {
@@ -158,11 +156,11 @@ public class RedBlackTree<T extends Comparable<T>> extends BaseBST<T, RBTNode<T>
             }
             child.setParent(node.getParent());
         } else {
+            // node is root
             root = child;
             child.setParent(NIL);
         }
         
-        // If deleted node was black, we need to rebalance
         if (node.getColor() == NodeColor.BLACK) {
             balanceDelete(child);
         }
@@ -173,6 +171,7 @@ public class RedBlackTree<T extends Comparable<T>> extends BaseBST<T, RBTNode<T>
             boolean isLeftChild = (node == node.getParent().getLeft());
             RBTNode<T> sibling = isLeftChild ? node.getParent().getRight() : node.getParent().getLeft();
 
+            // Красный брат
             if (sibling.getColor() == NodeColor.RED) {
                 sibling.setColor(NodeColor.BLACK);
                 node.getParent().setColor(NodeColor.RED);
@@ -184,22 +183,21 @@ public class RedBlackTree<T extends Comparable<T>> extends BaseBST<T, RBTNode<T>
 
             if (node == node.getParent().getLeft()) {
                 
-                // Case 2: Sibling is black with two black children
+                // У брата 2 чёрных потомка: красим брата, продолжаем от родителя
                 if (sibling.getLeft().getColor() == NodeColor.BLACK && 
                     sibling.getRight().getColor() == NodeColor.BLACK) {
                     sibling.setColor(NodeColor.RED);
                     node = node.getParent();
                 }
-                // Case 3 & 4: Sibling has at least one red child
                 else {
-                    // Case 3: Sibling's right child is black
+                    // Правый потомок брата черный: исправляем поворотом
                     if (sibling.getRight().getColor() == NodeColor.BLACK) {
                         sibling.getLeft().setColor(NodeColor.BLACK);
                         sibling.setColor(NodeColor.RED);
                         rotateRight(sibling);
                         sibling = node.getParent().getRight();
                     }
-                    // Case 4: Sibling's right child is red
+                    // Правый потомок красный: конец балансировки
                     sibling.setColor(node.getParent().getColor());
                     node.getParent().setColor(NodeColor.BLACK);
                     sibling.getRight().setColor(NodeColor.BLACK);
@@ -207,22 +205,21 @@ public class RedBlackTree<T extends Comparable<T>> extends BaseBST<T, RBTNode<T>
                     node = root;
                 }
             } else {
-                // Case 2: Sibling is black with two black children
+                // У брата 2 чёрных потомка: красим брата, балансируем от родителя
                 if (sibling.getRight().getColor() == NodeColor.BLACK && 
                     sibling.getLeft().getColor() == NodeColor.BLACK) {
                     sibling.setColor(NodeColor.RED);
                     node = node.getParent();
                 }
-                // Case 3 & 4: Sibling has at least one red child
                 else {
-                    // Case 3: Sibling's left child is black
+                    // левый потомок брата чёрный: исправляем поворотом
                     if (sibling.getLeft().getColor() == NodeColor.BLACK) {
                         sibling.getRight().setColor(NodeColor.BLACK);
                         sibling.setColor(NodeColor.RED);
                         rotateLeft(sibling);
                         sibling = node.getParent().getLeft();
                     }
-                    // Case 4: Sibling's left child is red
+                    // Правый потомок брата красный: конец балансировки
                     sibling.setColor(node.getParent().getColor());
                     node.getParent().setColor(NodeColor.BLACK);
                     sibling.getLeft().setColor(NodeColor.BLACK);
